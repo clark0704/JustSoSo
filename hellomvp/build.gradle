@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.huwenmin.hellomvp"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -48,4 +48,8 @@ dependencies {
     //图片加载框架
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:25.3.0'
+    //沉浸式状态栏
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    //列表播放器
+    compile 'com.shuyu:GSYVideoPlayer:1.6.0'
 }

@@ -2,9 +2,11 @@ package com.huwenmin.hellomvp.presenter;
 
 import android.content.Intent;
 
-import com.huwenmin.hellomvp.bean.AssertPageBean;
+import com.huwenmin.hellomvp.model.bean.AssertPageBean;
 import com.huwenmin.hellomvp.listener.BaseListener;
 import com.huwenmin.hellomvp.request.RetrofitHelper;
+
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

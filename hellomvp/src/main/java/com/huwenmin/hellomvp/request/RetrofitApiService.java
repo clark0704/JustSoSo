@@ -1,6 +1,6 @@
 package com.huwenmin.hellomvp.request;
 
-import com.huwenmin.hellomvp.bean.AssertPageBean;
+import com.huwenmin.hellomvp.model.bean.AssertPageBean;
 
 
 import io.reactivex.Observable;

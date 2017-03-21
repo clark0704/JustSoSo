@@ -1,4 +1,4 @@
-package com.huwenmin.hellomvp.bean;
+package com.huwenmin.hellomvp.model.bean;
 
 import com.google.gson.annotations.SerializedName;
 
