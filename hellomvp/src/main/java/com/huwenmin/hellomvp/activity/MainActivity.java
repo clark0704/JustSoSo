@@ -3,8 +3,6 @@ package com.huwenmin.hellomvp.activity;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.health.SystemHealthManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,10 +30,15 @@ import butterknife.Unbinder;
 public class MainActivity extends BaseActivity implements View.OnClickListener, BaseListener<AssertPageBean>, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     Unbinder mUnbinder;
+    @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    ListVideoUtil mListVideoUtil;
+    @BindView(R.id.swipeLayout)
+    SwipeRefreshLayout mSwipeLayout;
+
+    @BindView(R.id.video_full_container)
     FrameLayout mVideoFullContainer;
 
+    ListVideoUtil mListVideoUtil;
     LinearLayoutManager linearLayoutManager;
     int lastVisibleItem;
     int firstVisibleItem;
@@ -44,7 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private int p = 1;
     private long time = System.currentTimeMillis() / 1000;
     private static final int LIMIT = 6;
-    SwipeRefreshLayout mSwipeLayout;
+
     private boolean isErr = false;
 
     private HotspotPresent mPresent = new HotspotPresent();
