@@ -1,7 +1,11 @@
 package com.huwenmin.hellomvp.activity;
 
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.health.SystemHealthManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, BaseListener<AssertPageBean> {
+public class MainActivity extends BaseActivity implements View.OnClickListener, BaseListener<AssertPageBean>, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     Unbinder mUnbinder;
     RecyclerView mRecyclerView;
@@ -35,6 +39,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     LinearLayoutManager linearLayoutManager;
     int lastVisibleItem;
     int firstVisibleItem;
+
+    private int total_count = 18;
+    private int p = 1;
+    private long time = System.currentTimeMillis() / 1000;
+    private static final int LIMIT = 6;
+    SwipeRefreshLayout mSwipeLayout;
+    private boolean isErr = false;
 
     private HotspotPresent mPresent = new HotspotPresent();
 
@@ -47,6 +58,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mVideoFullContainer = (FrameLayout) findViewById(R.id.video_full_container);
+
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeLayout);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorSchemeColors(Color.rgb(47, 223, 189));
+
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
@@ -57,7 +73,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void initData() {
-        mPresent.getHotspotData();
+        mPresent.getHotspotData(p, time, LIMIT);
         mPresent.setListener(this);
     }
 
@@ -79,9 +95,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                firstVisibleItem   = linearLayoutManager.findFirstVisibleItemPosition();
+                firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                Debuger.printfLog("firstVisibleItem " + firstVisibleItem +" lastVisibleItem " + lastVisibleItem);
+                Debuger.printfLog("firstVisibleItem " + firstVisibleItem + " lastVisibleItem " + lastVisibleItem);
                 //大于0说明有播放,//对应的播放列表TAG
                 if (mListVideoUtil.getPlayPosition() >= 0 && mListVideoUtil.getPlayTAG().equals(MainAdapter.TAG)) {
                     //当前播放的位置
@@ -128,9 +144,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 }
             }
+
         });
 
     }
+
     @Override
     public void onBackPressed() {
         if (mListVideoUtil.backFromFull()) {
@@ -148,9 +166,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mListVideoUtil.releaseVideoPlayer();
         GSYVideoPlayer.releaseAllVideos();
 
-
         mAdapter = null;
-
     }
 
     @Override
@@ -160,6 +176,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onSuccess(AssertPageBean pageBean) {
+        total_count = pageBean.getPage_count();
         mAdapter.addData(pageBean.getDatas());
         mAdapter.notifyDataSetChanged();
     }
@@ -168,6 +185,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mAdapter = new MainAdapter(null, this);
         View emptyView = getLayoutInflater().inflate(R.layout.empty_view, (ViewGroup) mRecyclerView.getParent(), false);
         mAdapter.setEmptyView(emptyView);
+        mAdapter.setOnLoadMoreListener(this, mRecyclerView);
         mAdapter.openLoadAnimation();
         mRecyclerView.setAdapter(mAdapter);
         ((MainAdapter) mAdapter).setListVideoUtil(mListVideoUtil);
@@ -177,7 +195,54 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onError(String error) {
         Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
+        isErr = true;
     }
 
+    //加载更多
+    @Override
+    public void onLoadMoreRequested() {
+        mSwipeLayout.setEnabled(false);
+        if (mAdapter.getData().size() < LIMIT) {
+            mAdapter.loadMoreEnd(true);
+        } else {
+            if (mAdapter.getData().size() >= total_count) {
+                mAdapter.loadMoreEnd(false);
+            } else {
+                if (isErr) {
+                    isErr = false;
+                    mAdapter.loadMoreFail();
+                } else {
+                    p++;
+                    mPresent.getHotspotData(p, time, LIMIT);
+                    mAdapter.loadMoreComplete();
+                }
+            }
+        }
+        mSwipeLayout.setEnabled(true);
+    }
 
+    //下拉刷新
+    @Override
+    public void onRefresh() {
+
+        //释放播放器资源
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mListVideoUtil.isSmall()) {
+                    mListVideoUtil.smallVideoToNormal();
+                }
+            }
+        });
+        mListVideoUtil.releaseVideoPlayer();
+        GSYVideoPlayer.releaseAllVideos();
+
+
+        mAdapter.setEnableLoadMore(false);
+        p = 1;
+        mSwipeLayout.setRefreshing(false);
+        mAdapter.setEnableLoadMore(true);
+        mAdapter.setNewData(null);
+        mPresent.getHotspotData(p, time, LIMIT);
+    }
 }

@@ -54,8 +54,8 @@ public class HotspotPresent implements BasePresenter {
 
     }
 
-    public void getHotspotData() {
-        RetrofitHelper.getInstance().getService().getTodayHot()
+    public void getHotspotData(int p,long time,int limit) {
+        RetrofitHelper.getInstance().getService().getTodayHot(p,time,limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AssertPageBean>() {

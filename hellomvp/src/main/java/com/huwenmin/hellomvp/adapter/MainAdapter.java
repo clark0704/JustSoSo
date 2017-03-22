@@ -16,7 +16,7 @@ import com.shuyu.gsyvideoplayer.utils.ListVideoUtil;
 import java.util.List;
 
 /**
- * 作者：Administrator on 2017/3/21 15:04
+ * 作者：胡文敏 on 2017/3/21 15:04
  * <p>
  * 功能：首页适配器
  */
@@ -39,7 +39,8 @@ public class MainAdapter extends BaseQuickAdapter<AssertPageBean.DatasBean,BaseV
         Glide.with(mContext).load(item.getPic()).into(imageView);
 
         ImageView listItemBtn = helper.getView(R.id.iv_btn);
-        RelativeLayout relativeLayout = helper.getView(R.id.framerLayout);
+
+        FrameLayout relativeLayout = helper.getView(R.id.framerLayout);
         listVideoUtil.addVideoPlayer(helper.getLayoutPosition(), imageView, TAG, relativeLayout, listItemBtn);
 
         relativeLayout.setOnClickListener(new View.OnClickListener() {

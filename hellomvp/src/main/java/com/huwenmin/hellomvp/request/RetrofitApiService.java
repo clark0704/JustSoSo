@@ -5,6 +5,7 @@ import com.huwenmin.hellomvp.model.bean.AssertPageBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * 作者：胡文敏 on 2017/3/16 16:35
@@ -14,6 +15,6 @@ import retrofit2.http.GET;
 
 public interface RetrofitApiService {
 
-    @GET("Phone/todayhot")
-    Observable<AssertPageBean> getTodayHot();
+    @GET("Phone/todayhot/p/{p}/time/{time}/limit/{limit}")
+    Observable<AssertPageBean> getTodayHot(@Path("p") int p,@Path("time") long time,@Path("limit") int limit);
 }

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         setContentView(getLayoutId());
 
+        mHandler = new Handler();
+
         initView();
 
         initData();
@@ -74,4 +77,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public BaseQuickAdapter mAdapter;
+    public Handler mHandler;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null){
+            mHandler.removeCallbacksAndMessages(null);
+        }
+    }
 }
