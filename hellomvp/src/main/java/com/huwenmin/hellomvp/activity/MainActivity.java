@@ -229,23 +229,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onRefresh() {
 
         //释放播放器资源
-        mHandler.post(new Runnable() {
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (mListVideoUtil.isSmall()) {
                     mListVideoUtil.smallVideoToNormal();
                 }
+                mListVideoUtil.releaseVideoPlayer();
+                GSYVideoPlayer.releaseAllVideos();
+
+                mAdapter.setEnableLoadMore(false);
+                p = 1;
+                mSwipeLayout.setRefreshing(false);
+                mAdapter.setEnableLoadMore(true);
+                mAdapter.setNewData(null);
+                mPresent.getHotspotData(p, time, LIMIT);
             }
-        });
-        mListVideoUtil.releaseVideoPlayer();
-        GSYVideoPlayer.releaseAllVideos();
+        },1000);
 
 
-        mAdapter.setEnableLoadMore(false);
-        p = 1;
-        mSwipeLayout.setRefreshing(false);
-        mAdapter.setEnableLoadMore(true);
-        mAdapter.setNewData(null);
-        mPresent.getHotspotData(p, time, LIMIT);
+
+
     }
 }

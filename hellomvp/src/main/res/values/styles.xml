@@ -11,8 +11,7 @@
     <style name="bg">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/background</item>
     </style>
 
     <style name="empty_img">
