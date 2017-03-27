@@ -14,10 +14,10 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.huwenmin.hellomvp.R;
 import com.huwenmin.hellomvp.adapter.MainAdapter;
-import com.huwenmin.hellomvp.listener.BaseListener;
 import com.huwenmin.hellomvp.listener.SampleListener;
 import com.huwenmin.hellomvp.model.bean.AssertPageBean;
 import com.huwenmin.hellomvp.presenter.HotspotPresent;
+import com.huwenmin.hellomvp.view.HotspotView;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
@@ -27,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, BaseListener<AssertPageBean>, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, HotspotView, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     Unbinder mUnbinder;
     @BindView(R.id.recyclerView)
@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private boolean isErr = false;
 
-    private HotspotPresent mPresent = new HotspotPresent();
+    private HotspotPresent mPresent;
 
     @Override
     protected int getLayoutId() {
@@ -76,8 +76,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void initData() {
-        mPresent.getHotspotData(p, time, LIMIT);
-        mPresent.setListener(this);
+        mPresent = new HotspotPresent(this);
+        mPresent.requestHotspotData(p, time, LIMIT);
     }
 
     @Override
@@ -149,7 +149,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
 
         });
-
     }
 
     @Override
@@ -177,13 +176,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
-    @Override
-    public void onSuccess(AssertPageBean pageBean) {
-        total_count = pageBean.getPage_count();
-        mAdapter.addData(pageBean.getDatas());
-        mAdapter.notifyDataSetChanged();
-    }
-
     private void initAdapter() {
         mAdapter = new MainAdapter(null, this);
         View emptyView = getLayoutInflater().inflate(R.layout.empty_view, (ViewGroup) mRecyclerView.getParent(), false);
@@ -195,11 +187,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
-    @Override
-    public void onError(String error) {
-        Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
-        isErr = true;
-    }
 
     //加载更多
     @Override
@@ -216,7 +203,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     mAdapter.loadMoreFail();
                 } else {
                     p++;
-                    mPresent.getHotspotData(p, time, LIMIT);
+                    mPresent.requestHotspotData(p, time, LIMIT);
                     mAdapter.loadMoreComplete();
                 }
             }
@@ -243,12 +230,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 mSwipeLayout.setRefreshing(false);
                 mAdapter.setEnableLoadMore(true);
                 mAdapter.setNewData(null);
-                mPresent.getHotspotData(p, time, LIMIT);
+                mPresent.requestHotspotData(p, time, LIMIT);
             }
         },1000);
 
 
 
 
+    }
+
+    @Override
+    public void showError(String msg) {
+        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+        isErr = true;
+    }
+
+    @Override
+    public void getHotspotData(AssertPageBean pageBean) {
+        total_count = pageBean.getPage_count();
+        mAdapter.addData(pageBean.getDatas());
+        mAdapter.notifyDataSetChanged();
     }
 }

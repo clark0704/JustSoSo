@@ -55,8 +55,8 @@ public class RetrofitHelper {
         return  mRetrofit;
     }
 
-    public RetrofitApiService getService(){
-        return getRetrofit(getClient()).create(RetrofitApiService.class);
+    public RetrofitApi getApi(){
+        return getRetrofit(getClient()).create(RetrofitApi.class);
     }
 
     private OkHttpClient getClient() {

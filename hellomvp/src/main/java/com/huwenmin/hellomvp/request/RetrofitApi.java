@@ -13,7 +13,7 @@ import retrofit2.http.Path;
  * 功能： 网络请求接口
  */
 
-public interface RetrofitApiService {
+public interface RetrofitApi {
 
     @GET("Phone/todayhot/p/{p}/time/{time}/limit/{limit}")
     Observable<AssertPageBean> getTodayHot(@Path("p") int p,@Path("time") long time,@Path("limit") int limit);
