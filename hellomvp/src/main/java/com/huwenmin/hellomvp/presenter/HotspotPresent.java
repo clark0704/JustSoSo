@@ -30,7 +30,7 @@ public class HotspotPresent implements BasePresenter {
        if (mDisposable.isDisposed())mDisposable.dispose();
     }
     public void requestHotspotData(int p, long time, int limit ){
-        RetrofitService.getHotspotData(p, time, limit, new RequestCallback<AssertPageBean>() {
+        RetrofitService.getInstance().getHotspotData(p, time, limit, new RequestCallback<AssertPageBean>() {
             @Override
             public void onSuccess(AssertPageBean assertPageBean) {
                 if (assertPageBean != null  ){
@@ -49,7 +49,8 @@ public class HotspotPresent implements BasePresenter {
             public void getDisposable(Disposable disposable) {
                 mDisposable = disposable;
             }
-        });
+        })
+                .getObservable();
     }
 
 }

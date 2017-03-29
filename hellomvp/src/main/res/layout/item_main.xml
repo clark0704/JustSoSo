@@ -12,12 +12,12 @@
         <FrameLayout
             android:id="@+id/framerLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="200dp">
 
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/default_logo_small"/>
         </FrameLayout>
