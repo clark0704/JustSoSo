@@ -576,9 +576,9 @@ public class MyVideoView extends SurfaceView implements IVideoView {
                 this.mMediaPlayer.setOnBufferingUpdateListener(this.mBufferingUpdateListener);
                 this.mCurrentBufferPercentage = 0;
                 if (mMediaPlayer instanceof ffplay){
-                    ((ffplay)mMediaPlayer).setOption(1,"User-Agent","wasutv_player1.1");
+                    ((ffplay)mMediaPlayer).setOption(1,"user-agent","wasutv_player1.1");
                 }
-                this.mMediaPlayer.setDataSource(var1, this.mUri,null);
+                this.mMediaPlayer.setDataSource(var1, this.mUri,mHeaders);
 
                 this.mMediaPlayer.setDisplay(this.mSurfaceHolder);
                 this.mMediaPlayer.setAudioStreamType(3);
