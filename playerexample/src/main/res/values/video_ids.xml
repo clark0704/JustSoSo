@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="start" type="id">start</item>
+    <item name="small_close" type="id">small_close</item>
+    <item name="back" type="id">video_back</item>
+    <item name="cover" type="id">cover</item>
+    <item name="fullscreen" type="id">fullscreen</item>
+    <item name="progress" type="id">progress</item>
+    <item name="current" type="id">current_time</item>
+    <item name="total" type="id">total_time</item>
+    <item name="layout_bottom" type="id">layout_bottom</item>
+    <item name="surface_container" type="id">surface_container</item>
+    <item name="layout_top" type="id">layout_top</item>
+</resources>

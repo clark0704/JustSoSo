@@ -41,4 +41,5 @@ dependencies {
     compile 'com.jakewharton:butterknife-compiler:8.5.1'
 
     compile 'com.andkulikov:transitionseverywhere:1.7.0'
+    compile 'com.danikula:videocache:2.6.4'
 }
