@@ -125,7 +125,7 @@ public abstract class WasuBaseVideoPlayer extends FrameLayout implements WasuMed
 
     protected TextView mCurrentTimeTextView, mTotalTimeTextView;
 
-    protected ViewGroup mTopContainer, mBottomContainer;
+    protected View mTopContainer, mBottomContainer,mLeftContainer,mRightContainer;
 
     protected ImageView mBackButton;
 

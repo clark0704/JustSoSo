@@ -166,9 +166,11 @@ public abstract class WasuVideoPlayer extends WasuBaseVideoPlayer implements Vie
         mProgressBar = (SeekBar) findViewById(R.id.progress);
         mCurrentTimeTextView = (TextView) findViewById(R.id.current);
         mTotalTimeTextView = (TextView) findViewById(R.id.total);
-        mBottomContainer = (ViewGroup) findViewById(R.id.layout_bottom);
+        mBottomContainer =  findViewById(R.id.layout_bottom);
+        mLeftContainer = findViewById(R.id.layout_left);
+        mRightContainer = findViewById(R.id.layout_right);
         mTextureViewContainer = (RelativeLayout) findViewById(R.id.surface_container);
-        mTopContainer = (ViewGroup) findViewById(R.id.layout_top);
+        mTopContainer = findViewById(R.id.layout_top);
         if (isInEditMode())
             return;
         mStartButton.setOnClickListener(this);
