@@ -1,1 +1,1 @@
-include ':hellomvp', ':playerexample'
+include ':hellomvp', ':playerexample', ':gsyVideoPlayer'

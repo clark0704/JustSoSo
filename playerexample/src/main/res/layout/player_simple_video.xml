@@ -9,6 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"/>
+
+    <RelativeLayout
+        android:id="@+id/thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:scaleType="fitCenter" />
     <!-- 视频顶部的布局 -->
     <LinearLayout
         android:id="@id/layout_top"
@@ -84,7 +91,7 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:src="@drawable/player_btn_share_selector"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
         </LinearLayout>
     </LinearLayout>
     <!-- 视频底部布局 -->
@@ -131,9 +138,9 @@
             android:maxHeight="2dp"
             android:minHeight="2dp"
             android:progress="100"
-            android:progressDrawable="@drawable/player_seekbar_style_pip_selector"
+            android:progressDrawable="@drawable/player_seekbar_style_selector"
             android:secondaryProgress="0"
-            android:thumb="@drawable/player_seekthumb_selector"
+            android:thumb="@drawable/player_seek_thumb_selector"
             />
         <TextView
             android:id="@id/total"
@@ -154,4 +161,15 @@
             android:scaleType="centerCrop"
             android:background="@drawable/player_btn_full_selector" />
     </LinearLayout>
+
+    <!-- 锁屏布局 -->
+    <ImageButton
+        android:id="@id/lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/player_lock_selector"/>
+
 </RelativeLayout>
