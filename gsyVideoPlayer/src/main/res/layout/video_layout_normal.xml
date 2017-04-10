@@ -12,7 +12,7 @@
 
     </RelativeLayout>
 
-    <com.shuyu.gsyvideoplayer.GSYImageCover
+    <com.wasu.videoplayer.widget.MyImageCover
         android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,7 +40,7 @@
         android:background="#99000000"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/current"

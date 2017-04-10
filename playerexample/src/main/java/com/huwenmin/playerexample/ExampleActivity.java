@@ -2,44 +2,41 @@ package com.huwenmin.playerexample;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.huwenmin.playerexample.listener.SampleListener;
-import com.huwenmin.playerexample.widget.ScrollWebView;
-import com.shuyu.gsyvideoplayer.listener.LockClickListener;
-import com.shuyu.gsyvideoplayer.utils.CommonUtil;
-import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
-import com.shuyu.gsyvideoplayer.video.NormalGSYVideoPlayer;
+import com.huwenmin.playerexample.video.LandLayoutVideo;
+import com.wasu.videoplayer.video.VideoManager;
+import com.wasu.videoplayer.listener.LockClickListener;
+import com.wasu.videoplayer.utils.OrientationUtils;
+import com.wasu.videoplayer.video.WasuVideoPlayer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.support.v4.widget.NestedScrollView.*;
 
 public class ExampleActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.scroll_webView)
-    ScrollWebView webView;
-    @BindView(R.id.web_top_layout)
-    NestedScrollView webTopLayout;
-    @BindView(R.id.web_player)
-    NormalGSYVideoPlayer webPlayer;
-    @BindView(R.id.web_top_layout_video)
-    RelativeLayout webTopLayoutVideo;
+    @BindView(R.id.post_detail_nested_scroll)
+    NestedScrollView postDetailNestedScroll;
 
-    private String exampleUrl = "http://baobab.wdjcdn.com/14564977406580.mp4";
+    //推荐使用StandardGSYVideoPlayer，功能一致
+    @BindView(R.id.detail_player)
+    WasuVideoPlayer detailPlayer;
+
+    @BindView(R.id.activity_detail_player)
+    RelativeLayout activityDetailPlayer;
+
+
+    private String url = "http://baobab.wdjcdn.com/14564977406580.mp4";
 
     private boolean isPlay;
     private boolean isPause;
-    private boolean isSamll;
 
     private OrientationUtils orientationUtils;
 
@@ -49,115 +46,85 @@ public class ExampleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_example);
         ButterKnife.bind(this);
 
-        String url = "http://baobab.wdjcdn.com/14564977406580.mp4";
-        //String url = "https://d131x7vzzf85jg.cloudfront.net/upload/documents/paper/b2/61/00/00/20160420_115018_b544.mp4";
-        webPlayer.setUp(url, false, null, "测试视频");
+//        url = "http://apkvod-cnc.wasu.cn/201704070936/7b470b29fc2bb6e05f3a76d635944c12/pcsan12/mams/vod/201701/11/09/2017011109430898444b82439/playlist.m3u8?k=f1279898c8ba12a20da1bf38f24da441&su=Rn0CvBzA+uFGwPhCcOb+fA==&uid=e235da8b4dbf93f04848a72358176378&tn=15694035&t=b87d623ab2ae925fa4140eb90d542ec5&src=wasu.cn&cid=22&vid=8418510&WS00001=10000&em=3";
+        detailPlayer.setUp(url, false, null, "测试视频");
+//        VideoManager.instance(ExampleActivity.this).setTimeOut(4000, true);
+//
+//
+//        //增加封面
+////        ImageView imageView = new ImageView(this);
+////        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+////        imageView.setImageResource(R.mipmap.xxx1);
+////        detailPlayer.setThumbImageView(imageView);
+//
+//        resolveNormalVideoUI();
+//
+//        //外部辅助的旋转，帮助全屏
+//        orientationUtils = new OrientationUtils(this, detailPlayer);
+//        //初始化不打开外部的旋转
+//        orientationUtils.setEnable(false);
+//
+//        detailPlayer.setIsTouchWiget(true);
+//        //关闭自动旋转
+//        detailPlayer.setRotateViewAuto(false);
+//        //一全屏就自动横屏
+//        detailPlayer.setLockLand(false);
+//        //设置全屏动画
+//        detailPlayer.setShowFullAnimation(false);
+//        //是否需要全屏锁定屏幕功能
+//        detailPlayer.setNeedLockFull(true);
+//        //detailPlayer.setOpenPreView(true);
+//        detailPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //直接横屏
+//                orientationUtils.resolveByClick();
+//
+//                //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
+//                detailPlayer.startWindowFullscreen(ExampleActivity.this, true, true);
+//            }
+//        });
+//
+//        detailPlayer.setStandardVideoAllCallBack(new SampleListener() {
+//            @Override
+//            public void onPrepared(String url, Object... objects) {
+//                super.onPrepared(url, objects);
+//                //开始播放了才能旋转和全屏
+//                orientationUtils.setEnable(true);
+//                isPlay = true;
+//            }
+//
+//            @Override
+//            public void onAutoComplete(String url, Object... objects) {
+//                super.onAutoComplete(url, objects);
+//            }
+//
+//            @Override
+//            public void onClickStartError(String url, Object... objects) {
+//                super.onClickStartError(url, objects);
+//            }
+//
+//            @Override
+//            public void onQuitFullscreen(String url, Object... objects) {
+//                super.onQuitFullscreen(url, objects);
+//                if (orientationUtils != null) {
+//                    orientationUtils.backToProtVideo();
+//                }
+//            }
+//        });
+//
+//        detailPlayer.setLockClickListener(new LockClickListener() {
+//            @Override
+//            public void onClick(View view, boolean lock) {
+//                if (orientationUtils != null) {
+//                    //配合下方的onConfigurationChanged
+//                    orientationUtils.setEnable(!lock);
+//                }
+//            }
+//        });
 
-        //增加封面
-        ImageView imageView = new ImageView(this);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.xxx1);
-        webPlayer.setThumbImageView(imageView);
-
-        resolveNormalVideoUI();
-
-        //外部辅助的旋转，帮助全屏
-        orientationUtils = new OrientationUtils(this, webPlayer);
-        //初始化不打开外部的旋转
-        orientationUtils.setEnable(false);
-
-        webPlayer.setIsTouchWiget(true);
-        //关闭自动旋转
-        webPlayer.setRotateViewAuto(false);
-        webPlayer.setLockLand(false);
-        webPlayer.setShowFullAnimation(false);
-        webPlayer.setNeedLockFull(true);
-        //detailPlayer.setOpenPreView(true);
-        webPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //直接横屏
-                orientationUtils.resolveByClick();
-
-                //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
-                webPlayer.startWindowFullscreen(ExampleActivity.this, true, true);
-            }
-        });
-
-        webPlayer.setStandardVideoAllCallBack(new SampleListener() {
-            @Override
-            public void onPrepared(String url, Object... objects) {
-                super.onPrepared(url, objects);
-                //开始播放了才能旋转和全屏
-                orientationUtils.setEnable(true);
-                isPlay = true;
-            }
-
-            @Override
-            public void onAutoComplete(String url, Object... objects) {
-                super.onAutoComplete(url, objects);
-            }
-
-            @Override
-            public void onClickStartError(String url, Object... objects) {
-                super.onClickStartError(url, objects);
-            }
-
-            @Override
-            public void onQuitFullscreen(String url, Object... objects) {
-                super.onQuitFullscreen(url, objects);
-                if (orientationUtils != null) {
-                    orientationUtils.backToProtVideo();
-                }
-            }
-        });
-
-        webPlayer.setLockClickListener(new LockClickListener() {
-            @Override
-            public void onClick(View view, boolean lock) {
-                if (orientationUtils != null) {
-                    //配合下方的onConfigurationChanged
-                    orientationUtils.setEnable(!lock);
-                }
-            }
-        });
-
-
-        WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        webView.loadUrl("https://www.baidu.com");
-
-
-        webTopLayout.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (!webPlayer.isIfCurrentIsFullscreen() && scrollY >= 0 && isPlay) {
-                    if (scrollY > webPlayer.getHeight()) {
-                        //如果是小窗口就不需要处理
-                        if (!isSamll) {
-                            isSamll = true;
-                            int size = CommonUtil.dip2px(ExampleActivity.this, 150);
-                            webPlayer.showSmallVideo(new Point(size, size), true, true);
-                            orientationUtils.setEnable(false);
-                        }
-                    } else {
-                        if (isSamll) {
-                            isSamll = false;
-                            orientationUtils.setEnable(true);
-                            //必须
-                            webTopLayoutVideo.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    webPlayer.hideSmallVideo();
-                                }
-                            }, 50);
-                        }
-                    }
-                    webTopLayoutVideo.setTranslationY((scrollY <= webTopLayoutVideo.getHeight()) ? -scrollY : -webTopLayoutVideo.getHeight());
-                }
-            }
-        });
-
+        //开始播放
+        detailPlayer.startPlayLogic();
     }
 
     @Override
@@ -167,7 +134,7 @@ public class ExampleActivity extends AppCompatActivity {
             orientationUtils.backToProtVideo();
         }
 
-        if (webPlayer.backFromWindowFull(this)) {
+        if (detailPlayer.backFromWindowFull(this)) {
             return;
         }
         super.onBackPressed();
@@ -189,7 +156,7 @@ public class ExampleActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        webPlayer.releaseAllVideos();
+        detailPlayer.releaseAllVideos();
         if (orientationUtils != null)
             orientationUtils.releaseListener();
     }
@@ -198,15 +165,15 @@ public class ExampleActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         //如果旋转了就全屏
-        if (isPlay && !isPause && !isSamll) {
+        if (isPlay && !isPause ) {
             if (newConfig.orientation == ActivityInfo.SCREEN_ORIENTATION_USER) {
-                if (!webPlayer.isIfCurrentIsFullscreen()) {
-                    webPlayer.startWindowFullscreen(ExampleActivity.this, true, true);
+                if (!detailPlayer.isIfCurrentIsFullscreen()) {
+                    detailPlayer.startWindowFullscreen(ExampleActivity.this, true, true);
                 }
             } else {
                 //新版本isIfCurrentIsFullscreen的标志位内部提前设置了，所以不会和手动点击冲突
-                if (webPlayer.isIfCurrentIsFullscreen()) {
-                    webPlayer.backFromWindowFull(this);
+                if (detailPlayer.isIfCurrentIsFullscreen()) {
+                    detailPlayer.backFromWindowFull(this);
                 }
                 if (orientationUtils != null) {
                     orientationUtils.setEnable(true);
@@ -216,10 +183,10 @@ public class ExampleActivity extends AppCompatActivity {
     }
 
 
-    private void resolveNormalVideoUI() {
-        //增加title
-        webPlayer.getTitleTextView().setVisibility(View.GONE);
-        webPlayer.getTitleTextView().setText("测试视频");
-        webPlayer.getBackButton().setVisibility(View.GONE);
-    }
+//    private void resolveNormalVideoUI() {
+//        //增加title
+//        detailPlayer.getTitleTextView().setVisibility(View.GONE);
+//        detailPlayer.getTitleTextView().setText("测试视频");
+//        detailPlayer.getBackButton().setVisibility(View.GONE);
+//    }
 }

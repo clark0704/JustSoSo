@@ -14,7 +14,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AnticipateInterpolator;
 
-import com.shuyu.gsyvideoplayer.R;
+import com.wasu.videoplayer.R;
 
 /**
  * Created by codeest on 16/11/7.

@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/activity_detail_player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/web_top_layout"
+        android:id="@+id/post_detail_nested_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="200dp" />
 
-            <com.huwenmin.playerexample.widget.ScrollWebView
-                android:id="@+id/scroll_webView"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
         </LinearLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
-    <RelativeLayout
-        android:id="@+id/web_top_layout_video"
+    <com.wasu.videoplayer.video.WasuVideoPlayer
+        android:id="@+id/detail_player"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
-        <com.shuyu.gsyvideoplayer.video.NormalGSYVideoPlayer
-            android:id="@+id/web_player"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
-    </RelativeLayout>
 </RelativeLayout>

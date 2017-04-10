@@ -1,6 +1,6 @@
 package com.huwenmin.playerexample.listener;
 
-import com.shuyu.gsyvideoplayer.listener.StandardVideoAllCallBack;
+import com.wasu.videoplayer.listener.StandardVideoAllCallBack;
 
 /**
  * Created by shuyu on 2016/11/23.

@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 
-import com.shuyu.gsyvideoplayer.R;
+import com.wasu.videoplayer.R;
 
 /**
  * Created by codeest on 2016/11/9.

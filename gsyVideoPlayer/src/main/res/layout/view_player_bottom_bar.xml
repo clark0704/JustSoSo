@@ -1,0 +1,76 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/layout_bottom"
+    android:layout_width="match_parent"
+    android:layout_alignParentBottom="true"
+    android:orientation="horizontal"
+    android:paddingLeft="15dp"
+    android:gravity="center"
+    android:paddingRight="15dp"
+    android:background="@drawable/video_title_bg"
+    android:layout_height="48dp">
+
+    <ImageButton
+        android:id="@id/start"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/player_btn_play_selector"
+        android:background="@null"
+        android:padding="5dp" />
+
+    <ImageButton
+        android:id="@+id/btnPlayNext"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/player_btn_next_selector"
+        android:background="@null"
+        android:visibility="gone"
+        android:padding="5dp" />
+    <TextView
+        android:id="@id/current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:text="00:00:00"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <SeekBar
+        android:id="@id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/layout_left"
+        android:layout_toLeftOf="@+id/layout_right"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:max="100"
+        android:maxHeight="2dp"
+        android:minHeight="2dp"
+        android:progress="100"
+        android:progressDrawable="@drawable/player_seekbar_style_selector"
+        android:secondaryProgress="0"
+        android:thumb="@drawable/player_seek_thumb_selector"
+        />
+    <TextView
+        android:id="@id/total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="00:00:00"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/fullscreen"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/player_btn_full_selector" />
+    </LinearLayout>
