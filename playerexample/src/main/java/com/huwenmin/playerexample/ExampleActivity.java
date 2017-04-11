@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.huwenmin.playerexample.listener.SampleListener;
-import com.huwenmin.playerexample.video.LandLayoutVideo;
-import com.wasu.videoplayer.utils.VideoType;
 import com.wasu.videoplayer.video.VideoManager;
 import com.wasu.videoplayer.listener.LockClickListener;
 import com.wasu.videoplayer.utils.OrientationUtils;
@@ -70,8 +68,6 @@ public class ExampleActivity extends AppCompatActivity {
         detailPlayer.setShowFullAnimation(false);
 //        //是否需要全屏锁定屏幕功能
         detailPlayer.setNeedLockFull(true);
-        //初始化状态
-        detailPlayer.initUIState();
 
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscape = true;
@@ -108,9 +104,14 @@ public class ExampleActivity extends AppCompatActivity {
             public void onPrepared(String url, Object... objects) {
                 super.onPrepared(url, objects);
 
-                if (isLandscape) orientationUtils.setEnable(false);
+                if (isLandscape) {
+                    orientationUtils.setEnable(false);
+                } else {
                     //开始播放了才能旋转和全屏
-                else orientationUtils.setEnable(true);
+                    orientationUtils.setEnable(true);
+                }
+
+
             }
 
             @Override
@@ -186,8 +187,9 @@ public class ExampleActivity extends AppCompatActivity {
             if (detailPlayer.isIfCurrentIsFullscreen()) {
                 detailPlayer.backFromWindowFull(this);
             }
-            if (orientationUtils != null && !isLandscape) {
-                orientationUtils.setEnable(true);
+            if (orientationUtils != null) {
+                if (isLandscape) orientationUtils.setEnable(false);
+                else orientationUtils.setEnable(true);
             }
         }
     }
