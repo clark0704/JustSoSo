@@ -12,8 +12,8 @@
 
     <ImageButton
         android:id="@id/start"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="centerCrop"
         android:src="@drawable/player_btn_play_selector"
         android:background="@null"
@@ -26,7 +26,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/player_btn_next_selector"
         android:background="@null"
-        android:visibility="gone"
+        android:visibility="visible"
         android:padding="5dp" />
     <TextView
         android:id="@id/current"
@@ -68,9 +68,10 @@
 
     <ImageButton
         android:id="@+id/fullscreen"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:padding="5dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/player_btn_full_selector" />
+        android:background="@null"
+        android:src="@drawable/player_btn_full_selector"/>
     </LinearLayout>

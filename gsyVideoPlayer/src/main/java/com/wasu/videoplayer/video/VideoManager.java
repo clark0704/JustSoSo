@@ -12,6 +12,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.Surface;
 
+import com.a.a;
 import com.danikula.videocache.CacheListener;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.danikula.videocache.file.Md5FileNameGenerator;
@@ -306,6 +307,8 @@ public class VideoManager implements IMediaPlayer.OnPreparedListener, IMediaPlay
     private void initIJKPlayer(Message msg) {
         mediaPlayer =  new ffplay(context);
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        ((ffplay) mediaPlayer).setOption(ffplay.OPT_CATEGORY_PLAYER, "mediacodec", 0);
+        ((ffplay) mediaPlayer).setOption(ffplay.OPT_CATEGORY_PLAYER, "mediacodec-hevc", 0);
         try {
             if (VideoType.isMediaCodec()) {
                 Debuger.printfLog("enable mediaCodec");

@@ -259,7 +259,7 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
             showNavKey(mContext, mSystemUiVisibility);
         }
         showSupportActionBar(mContext, mActionBar, mStatusBar);
-        getFullscreenButton().setImageResource(getEnlargeImageRes());
+        getFullscreenButton().setVisibility(VISIBLE);
     }
 
     /**
@@ -361,7 +361,7 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
             gsyVideoPlayer.setStateAndUi(mCurrentState);
             gsyVideoPlayer.addTextureView();
 
-            gsyVideoPlayer.getFullscreenButton().setImageResource(getShrinkImageRes());
+            gsyVideoPlayer.getFullscreenButton().setVisibility(GONE);
             gsyVideoPlayer.getFullscreenButton().setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -374,6 +374,7 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
                 @Override
                 public void onClick(View v) {
                     clearFullscreenLayout();
+
                 }
             });
 

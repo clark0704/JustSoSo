@@ -11,7 +11,7 @@
     <item name="layout_bottom" type="id">layout_bottom</item>
     <item name="surface_container" type="id">surface_container</item>
     <item name="layout_top" type="id">layout_top</item>
-    <item name="layout_left" type="id">layout_left</item>
+    <item name="layout_center" type="id">layout_center</item>
     <item name="layout_right" type="id">layout_right</item>
     <item name="title" type="id">title</item>
     <item name="lock_screen" type="id">lock_screen</item>
