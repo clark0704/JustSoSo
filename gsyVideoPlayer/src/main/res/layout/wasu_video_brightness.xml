@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/app_video_brightness_box"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/player_overlay_info"
+        android:layout_width="155dp"
+        android:layout_height="155dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/player_overlay_bg"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/player_overlay_textinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textColor="#ff2c2c2c"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/player_overlay_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/player_overlay_brightness"/>
+        <FrameLayout
+            android:id="@+id/verticalbar"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="13dp"
+            android:layout_height="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="1dp"
+                android:orientation="horizontal"
+                android:weightSum="100"
+                android:background="#ff2c2c2c"
+                android:gravity="left">
+
+                <View android:id="@+id/verticalbar_progress"
+                      android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:background="@drawable/player_land_volume_repeat"/>
+            </LinearLayout>
+        </FrameLayout>
+    </RelativeLayout>
+</LinearLayout>

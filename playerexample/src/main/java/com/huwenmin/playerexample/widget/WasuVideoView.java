@@ -376,7 +376,6 @@ public class WasuVideoView extends SurfaceView implements IVideoView {
     public void setOnErrorListener(IMediaPlayer.OnErrorListener var1) {
         this.mOnErrorListener = var1;
     }
-
     public void setOnInfoListener(IMediaPlayer.OnInfoListener var1) {
         this.mOnInfoListener = var1;
     }

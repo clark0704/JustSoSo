@@ -46,7 +46,7 @@ public class OrientationUtils {
                     }
                 }
                 // 设置竖屏
-                if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
+                if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330) ) {
                     if (mClick) {
                         if (mIsLand > 0 && !mClickLand) {
                             return;
@@ -70,7 +70,7 @@ public class OrientationUtils {
                     }
                 }
                 // 设置横屏
-                else if (((rotation >= 230) && (rotation <= 310))) {
+                if (((rotation >= 230) && (rotation <= 310))) {
                     if (mClick) {
                         if (!(mIsLand == 1) && !mClickPort) {
                             return;
@@ -90,7 +90,7 @@ public class OrientationUtils {
                     }
                 }
                 // 设置反向横屏
-                else if (rotation > 30 && rotation < 95) {
+                if (rotation > 30 && rotation < 95) {
                     if (mClick) {
                         if (!(mIsLand == 2) && !mClickPort) {
                             return;
@@ -212,4 +212,5 @@ public class OrientationUtils {
     public void setScreenType(int screenType) {
         this.screenType = screenType;
     }
+
 }

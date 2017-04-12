@@ -34,8 +34,6 @@ public class ExampleActivity extends AppCompatActivity {
 
     private String url = "http://baobab.wdjcdn.com/14564977406580.mp4";
 
-    private boolean isPlay;
-    private boolean isPause;
 
     private boolean isLandscape = false; //默认进来为横屏
 
@@ -47,6 +45,7 @@ public class ExampleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_example);
         ButterKnife.bind(this);
 
+        detailPlayer.setLandscape(isLandscape);
 //        url = "http://apkvod-cnc.wasu.cn/201704070936/7b470b29fc2bb6e05f3a76d635944c12/pcsan12/mams/vod/201701/11/09/2017011109430898444b82439/playlist.m3u8?k=f1279898c8ba12a20da1bf38f24da441&su=Rn0CvBzA+uFGwPhCcOb+fA==&uid=e235da8b4dbf93f04848a72358176378&tn=15694035&t=b87d623ab2ae925fa4140eb90d542ec5&src=wasu.cn&cid=22&vid=8418510&WS00001=10000&em=3";
         detailPlayer.setUp(url, false, null, "测试视频");
         VideoManager.instance(ExampleActivity.this).setTimeOut(4000, true);
@@ -68,26 +67,19 @@ public class ExampleActivity extends AppCompatActivity {
         detailPlayer.setShowFullAnimation(false);
 //        //是否需要全屏锁定屏幕功能
         detailPlayer.setNeedLockFull(true);
+        //初始化状态
+        detailPlayer.initUIState();
 
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            isLandscape = true;
-
-        }
-        detailPlayer.setLandscape(isLandscape);
+        if (isLandscape) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //设置一开始就是横屏进入的
+//        orientationUtils.setLandscape(isLandscape);
         detailPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                detailPlayer.clearFullscreenLayout();
-                if (isLandscape || !detailPlayer.isIfCurrentIsFullscreen()) {
-                    detailPlayer.releaseAllVideos();
-                    if (orientationUtils != null)
-                        orientationUtils.releaseListener();
-
-                    finish();
-                }
+                onBackPressed();
             }
         });
-
         detailPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,14 +96,11 @@ public class ExampleActivity extends AppCompatActivity {
             public void onPrepared(String url, Object... objects) {
                 super.onPrepared(url, objects);
 
-                if (isLandscape) {
+                if (!isLandscape) orientationUtils.setEnable(true);
+                else {
+                    detailPlayer.setRotateViewAuto(false);
                     orientationUtils.setEnable(false);
-                } else {
-                    //开始播放了才能旋转和全屏
-                    orientationUtils.setEnable(true);
                 }
-
-
             }
 
             @Override
@@ -134,7 +123,7 @@ public class ExampleActivity extends AppCompatActivity {
             public void onClick(View view, boolean lock) {
                 if (orientationUtils != null) {
                     //配合下方的onConfigurationChanged
-                    orientationUtils.setEnable(!lock);
+                     orientationUtils.setEnable(!lock);
                 }
             }
         });
@@ -145,12 +134,13 @@ public class ExampleActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        if (orientationUtils != null) {
-            orientationUtils.backToProtVideo();
-        }
-        if (detailPlayer.backFromWindowFull(this)) {
-            return;
+        if (!isLandscape) {
+            if (orientationUtils != null) {
+                orientationUtils.backToProtVideo();
+            }
+            if (detailPlayer.backFromWindowFull(this)) {
+                return;
+            }
         }
         super.onBackPressed();
     }
@@ -159,11 +149,13 @@ public class ExampleActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        detailPlayer.onVideoPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        detailPlayer.onVideoResume();
     }
 
     @Override
@@ -187,9 +179,8 @@ public class ExampleActivity extends AppCompatActivity {
             if (detailPlayer.isIfCurrentIsFullscreen()) {
                 detailPlayer.backFromWindowFull(this);
             }
-            if (orientationUtils != null) {
-                if (isLandscape) orientationUtils.setEnable(false);
-                else orientationUtils.setEnable(true);
+            if (orientationUtils != null  ) {
+                orientationUtils.setEnable(true);
             }
         }
     }

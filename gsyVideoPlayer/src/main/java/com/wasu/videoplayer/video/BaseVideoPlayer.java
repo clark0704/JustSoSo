@@ -33,6 +33,7 @@ import java.util.Map;
 
 
 import static com.wasu.videoplayer.utils.CommonUtil.getActionBarHeight;
+import static com.wasu.videoplayer.utils.CommonUtil.getAppCompActivity;
 import static com.wasu.videoplayer.utils.CommonUtil.getStatusBarHeight;
 import static com.wasu.videoplayer.utils.CommonUtil.hideNavKey;
 import static com.wasu.videoplayer.utils.CommonUtil.hideSupportActionBar;
@@ -135,6 +136,7 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
 
     private Handler mHandler = new Handler();
 
+    protected  boolean isLandscape;
     /**
      * 1.5.0开始加入，如果需要不同布局区分功能，需要重载
      */
@@ -362,19 +364,13 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
             gsyVideoPlayer.addTextureView();
 
             gsyVideoPlayer.getFullscreenButton().setVisibility(GONE);
-            gsyVideoPlayer.getFullscreenButton().setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clearFullscreenLayout();
-                }
-            });
 
             gsyVideoPlayer.getBackButton().setVisibility(VISIBLE);
             gsyVideoPlayer.getBackButton().setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clearFullscreenLayout();
-
+                   if (!isLandscape)clearFullscreenLayout();
+                   else getAppCompActivity(getContext()).onBackPressed();
                 }
             });
 
@@ -794,6 +790,14 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
      */
     public void setShrinkImageRes(int mShrinkImageRes) {
         this.mShrinkImageRes = mShrinkImageRes;
+    }
+
+    /**
+     * @param isLandscape 设置第一次进入是横屏
+     */
+
+    public void setLandscape(boolean isLandscape) {
+        this.isLandscape = isLandscape;
     }
 
 

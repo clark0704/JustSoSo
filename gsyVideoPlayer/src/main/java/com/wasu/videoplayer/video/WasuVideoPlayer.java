@@ -2,17 +2,25 @@ package com.wasu.videoplayer.video;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +49,10 @@ public class WasuVideoPlayer extends VideoPlayer {
     protected TextView mTitle; //标题
 
     protected ViewGroup mRightContainer;//右边的父布局（横屏）
-    protected Button mBtnEpisodeLand,mBtnDownloadLand,mBtnCollectLand;
+    protected Button mBtnEpisodeLand, mBtnDownloadLand, mBtnCollectLand;
 
     protected LinearLayout mTopRight; //竖屛右上角布局
-    protected ImageButton mBtnDownload,mBtnCollect,mBtnShare;//竖屛右上角的子控件
+    protected ImageButton mBtnDownload, mBtnCollect, mBtnShare;//竖屛右上角的子控件
 
     protected LinearLayout mTopRightLand;//横屏右上角布局
     protected ImageButton mBtnShareLand; //横屏分享
@@ -61,7 +69,14 @@ public class WasuVideoPlayer extends VideoPlayer {
     private StandardVideoAllCallBack mStandardVideoAllCallBack;
     protected LockClickListener mLockClickListener;//点击锁屏的回调
 
-    private boolean isLandscape = false;
+    //声音,亮度,进度控制
+    protected Dialog mBrightnessDialog;//亮度布局
+    protected Dialog mVolumeDialog;
+    RelativeLayout player_overlay_info;
+    FrameLayout mVerticalBar;
+    View  mVerticalBarProgress;
+    TextView tvInfo;
+    ImageView imgvOoverlay;
 
     public WasuVideoPlayer(Context context, Boolean fullFlag) {
         super(context, fullFlag);
@@ -77,7 +92,6 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     @Override
     public int getLayoutId() {
-
         return R.layout.player_simple_video;
     }
 
@@ -121,27 +135,23 @@ public class WasuVideoPlayer extends VideoPlayer {
         /**
          * 当前是横屏
          */
-        if(getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (isLandscape) {
             this.setIfCurrentIsFullscreen(true);
-            hideSupportActionBar(getContext(),true,true);
+            hideSupportActionBar(getContext(), true, true);
             if (mHideKey) hideNavKey(getContext());
+            mOrientationUtils.setEnable(false);
         }
+
     }
 
-    /**
-     *
-     * @param isLandscape 设置第一次进入是横屏
-     */
 
-    public void setLandscape(boolean isLandscape){
-        this.isLandscape = isLandscape;
-    }
     /**
      * 初始化为正常状态
      */
     public void initUIState() {
         setStateAndUi(CURRENT_STATE_NORMAL);
     }
+
     @Override
     public void onClick(View v) {
         super.onClick(v);
@@ -237,9 +247,9 @@ public class WasuVideoPlayer extends VideoPlayer {
     /**
      * 横竖屏显示UI
      */
-    protected void showUIIsFullscreen(){
+    protected void showUIIsFullscreen() {
 
-        if (mIfCurrentIsFullscreen && mNeedLockFull){
+        if (mIfCurrentIsFullscreen && mNeedLockFull) {
             mTopRight.setVisibility(GONE);
             mTopRightLand.setVisibility(VISIBLE);
             mRightContainer.setVisibility(VISIBLE);
@@ -247,7 +257,7 @@ public class WasuVideoPlayer extends VideoPlayer {
             mLockScreen.setVisibility(VISIBLE);
             mFullscreenButton.setVisibility(GONE);
 
-        }else {
+        } else {
             mTopRight.setVisibility(VISIBLE);
             mTopRightLand.setVisibility(GONE);
             mRightContainer.setVisibility(GONE);
@@ -255,22 +265,25 @@ public class WasuVideoPlayer extends VideoPlayer {
             mLockScreen.setVisibility(GONE);
             mFullscreenButton.setVisibility(VISIBLE);
         }
+        //在黑屏或者锁屏状态下启动，如果是锁屏的话，会回到继续锁屏的状态
+        if (mLockCurScreen) hideAllWidget();
     }
 
     /**
-     *  是否显示剧集控件
+     * 是否显示剧集控件
+     *
      * @param isShow 是否显示剧集控件
      */
-    public void isShowEpisode(boolean isShow){
+    public void isShowEpisode(boolean isShow) {
         mBtnEpisodeLand.setVisibility(GONE);
         if (isShow) mBtnEpisodeLand.setVisibility(VISIBLE);
     }
 
-    protected void updateStartImage(){
+    protected void updateStartImage() {
         ImageButton imageButton = (ImageButton) mStartButton;
-        if (mCurrentState == CURRENT_STATE_PLAYING){
+        if (mCurrentState == CURRENT_STATE_PLAYING) {
             imageButton.setImageResource(R.drawable.play_pause_selector);
-        }else {
+        } else {
             imageButton.setImageResource(R.drawable.play_normal_selector);
         }
     }
@@ -320,18 +333,21 @@ public class WasuVideoPlayer extends VideoPlayer {
 
         }
     }
+
     /**
      * 缓冲状态下隐藏控件
      */
     private void changeUiToPlayingBufferingClear() {
         changeUiToPreparingClear();
     }
+
     /**
      * 完成状态下隐藏控件
      */
     private void changeUiToCompleteClear() {
         changeUiToPreparingClear();
     }
+
     /**
      * 暂停状态下隐藏控件
      */
@@ -367,11 +383,6 @@ public class WasuVideoPlayer extends VideoPlayer {
                     break;
                 case MotionEvent.ACTION_UP:
                     startDismissControlViewTimer();
-//                    if (mChangePosition) {
-//                        int duration = getDuration();
-//                        int progress = mSeekTimePosition * 100 / (duration == 0 ? 1 : duration);
-//                        mBottomProgressBar.setProgress(progress);
-//                    }
                     if (!mChangePosition && !mChangeVolume && !mBrightness) {
                         onClickUiToggle();
                     }
@@ -446,11 +457,6 @@ public class WasuVideoPlayer extends VideoPlayer {
         startDismissControlViewTimer();
     }
 
-    @Override
-    protected void showVolumeDialog(float deltaY, int volumePercent) {
-        super.showVolumeDialog(deltaY, volumePercent);
-    }
-
     /**
      * 处理锁屏屏幕触摸逻辑
      */
@@ -459,8 +465,8 @@ public class WasuVideoPlayer extends VideoPlayer {
         if (mLockCurScreen) {
             mLockScreen.setBackgroundResource(R.drawable.player_unlock_selector);
             mLockCurScreen = false;
-            if (mOrientationUtils != null || !isLandscape)
-                mOrientationUtils.setEnable(mRotateViewAuto);
+            Log.e("isLandscape:", isLandscape + "");
+            if (mOrientationUtils != null) mOrientationUtils.setEnable(mRotateViewAuto);
         } else {
             mLockScreen.setBackgroundResource(R.drawable.player_lock_selector);
             mLockCurScreen = true;
@@ -481,12 +487,14 @@ public class WasuVideoPlayer extends VideoPlayer {
 
 
     }
+
     /**
      * 锁屏点击
      */
     public void setLockClickListener(LockClickListener lockClickListener) {
         this.mLockClickListener = lockClickListener;
     }
+
     @Override
     public boolean setUp(String url, boolean cacheWithPlay, File cachePath, Map<String, String> mapHeadData, Object... objects) {
         return super.setUp(url, cacheWithPlay, cachePath, mapHeadData, objects);
@@ -501,6 +509,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     public void clearFullscreenLayout() {
         super.clearFullscreenLayout();
         showUIIsFullscreen();
+
     }
 
     @Override
@@ -521,9 +530,27 @@ public class WasuVideoPlayer extends VideoPlayer {
     }
 
     @Override
+    public void onVideoPause() {
+        super.onVideoPause();
+    }
+
+    @Override
+    public void onVideoResume() {
+        super.onVideoResume();
+    }
+
+    /**
+     * 开始全屏播放
+     *
+     * @param context
+     * @param actionBar 是否有actionBar，有的话需要隐藏
+     * @param statusBar 是否有状态bar，有的话需要隐藏
+     * @return
+     */
+    @Override
     public BaseVideoPlayer startWindowFullscreen(Context context, boolean actionBar, boolean statusBar) {
-        BaseVideoPlayer baseVideoPlayer =  super.startWindowFullscreen(context, actionBar, statusBar);
-        if (baseVideoPlayer != null){
+        BaseVideoPlayer baseVideoPlayer = super.startWindowFullscreen(context, actionBar, statusBar);
+        if (baseVideoPlayer != null) {
             WasuVideoPlayer wasuVideoPlayer = (WasuVideoPlayer) baseVideoPlayer;
             wasuVideoPlayer.setStandardVideoAllCallBack(mStandardVideoAllCallBack);
             wasuVideoPlayer.setLockClickListener(mLockClickListener);
@@ -533,7 +560,12 @@ public class WasuVideoPlayer extends VideoPlayer {
         return baseVideoPlayer;
     }
 
-    public void setNeedLockFull(boolean needLockFull){
+    /**
+     * 设置锁屏
+     *
+     * @param needLockFull 是否需要锁屏功能
+     */
+    public void setNeedLockFull(boolean needLockFull) {
         this.mNeedLockFull = needLockFull;
     }
 
@@ -573,4 +605,99 @@ public class WasuVideoPlayer extends VideoPlayer {
         this.mStandardVideoAllCallBack = standardVideoAllCallBack;
         setVideoAllCallBack(standardVideoAllCallBack);
     }
+
+    /**
+     * 显示亮度
+     *
+     * @param percent 亮度百分比
+     */
+    @Override
+    protected void showBrightnessDialog(float percent) {
+        if (mBrightnessDialog == null){
+            View localView = initBrightAndVolumeView(percent);
+            tvInfo.setText("亮度");
+            imgvOoverlay.setImageResource(R.drawable.player_overlay_brightness);
+
+            mBrightnessDialog = new Dialog(getContext(), R.style.video_style_dialog_progress);
+            mBrightnessDialog.setContentView(localView);
+            mBrightnessDialog.getWindow().addFlags(8);
+            mBrightnessDialog.getWindow().addFlags(32);
+            mBrightnessDialog.getWindow().addFlags(16);
+            mBrightnessDialog.getWindow().setLayout(-2, -2);
+            WindowManager.LayoutParams localLayoutParams = mBrightnessDialog.getWindow().getAttributes();
+            localLayoutParams.gravity = Gravity.TOP | Gravity.CENTER;
+            localLayoutParams.width = getWidth();
+            localLayoutParams.height = getHeight();
+            int location[] = new int[2];
+            getLocationOnScreen(location);
+            localLayoutParams.x = location[0];
+            localLayoutParams.y = location[1];
+            mBrightnessDialog.getWindow().setAttributes(localLayoutParams);
+        }
+        if (!mBrightnessDialog.isShowing()) {
+            mBrightnessDialog.show();
+        }
+    }
+
+    @Override
+    protected void showVolumeDialog(float deltaY, int volumePercent) {
+        if (mVolumeDialog == null){
+            View localView = initBrightAndVolumeView(volumePercent);
+            tvInfo.setText("音量");
+            if (volumePercent == 0) {
+                imgvOoverlay.setImageResource(R.drawable.player_overlay_mute);
+            } else {
+                imgvOoverlay.setImageResource(R.drawable.player_overlay_sound);
+            }
+
+            mVolumeDialog = new Dialog(getContext(), R.style.video_style_dialog_progress);
+            mVolumeDialog.setContentView(localView);
+            mVolumeDialog.getWindow().addFlags(8);
+            mVolumeDialog.getWindow().addFlags(32);
+            mVolumeDialog.getWindow().addFlags(16);
+            mVolumeDialog.getWindow().setLayout(-2, -2);
+            WindowManager.LayoutParams localLayoutParams = mVolumeDialog.getWindow().getAttributes();
+            localLayoutParams.gravity = Gravity.TOP | Gravity.CENTER;
+            localLayoutParams.width = getWidth();
+            localLayoutParams.height = getHeight();
+            int location[] = new int[2];
+            getLocationOnScreen(location);
+            localLayoutParams.x = location[0];
+            localLayoutParams.y = location[1];
+            mVolumeDialog.getWindow().setAttributes(localLayoutParams);
+        }
+        if (mVolumeDialog.isShowing()){
+            mVolumeDialog.show();
+        }
+    }
+
+    @Override
+    protected void dismissBrightnessDialog() {
+        super.dismissBrightnessDialog();
+        if (mBrightnessDialog != null) {
+            mBrightnessDialog.dismiss();
+            mBrightnessDialog = null;
+        }
+    }
+
+    private View initBrightAndVolumeView(float percent){
+
+        View localView = LayoutInflater.from(getContext()).inflate(R.layout.wasu_video_brightness,null);
+        player_overlay_info = (RelativeLayout) localView.findViewById(R.id.player_overlay_info);
+        mVerticalBar = (FrameLayout) localView.findViewById(R.id.verticalbar);
+        tvInfo = (TextView) localView.findViewById(R.id.player_overlay_textinfo);
+        imgvOoverlay = (ImageView) localView.findViewById(R.id.player_overlay_image);
+        mVerticalBarProgress = localView.findViewById(R.id.verticalbar_progress);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mVerticalBarProgress.getLayoutParams();
+        float brightness = Math.min(Math.max(percent, 0.01f), 1f);
+        brightness = Math.round(brightness * 100);
+        layoutParams.weight = brightness;
+        mVerticalBarProgress.setLayoutParams(layoutParams);
+        mVerticalBar.setVisibility(View.VISIBLE);
+
+        return localView;
+    }
+
+
 }
