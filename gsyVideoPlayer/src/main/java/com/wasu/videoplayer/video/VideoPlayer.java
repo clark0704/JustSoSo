@@ -46,7 +46,7 @@ import static com.wasu.videoplayer.utils.CommonUtil.hideNavKey;
 
 public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClickListener, View.OnTouchListener, SeekBar.OnSeekBarChangeListener, TextureView.SurfaceTextureListener {
 
-    public static final String TAG = "GSYVideoPlayer";
+    public static final String TAG = "VideoPlayer";
 
 
     public static final int CURRENT_STATE_NORMAL = 0; //正常
@@ -819,6 +819,7 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
 
     @Override
     public void onAutoCompletion() {
+        Debuger.printfLog(TAG,"onAutoComplete");
         if (mVideoAllCallBack != null && isCurrentMediaListener()) {
             Debuger.printfLog("onAutoComplete");
             mVideoAllCallBack.onAutoComplete(mUrl, mObjects);
@@ -842,6 +843,7 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
 
     @Override
     public void onCompletion() {
+        Debuger.printfLog(TAG,"onCompletion");
         //make me normal first
         setStateAndUi(CURRENT_STATE_NORMAL);
         if (mTextureViewContainer.getChildCount() > 0) {

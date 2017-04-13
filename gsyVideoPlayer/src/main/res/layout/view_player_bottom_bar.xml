@@ -50,7 +50,7 @@
         android:max="100"
         android:maxHeight="2dp"
         android:minHeight="2dp"
-        android:progress="100"
+        android:progress="0"
         android:progressDrawable="@drawable/player_seekbar_style_selector"
         android:secondaryProgress="0"
         android:thumb="@drawable/player_seek_thumb_selector"

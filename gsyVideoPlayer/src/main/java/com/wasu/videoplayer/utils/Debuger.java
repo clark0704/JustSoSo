@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 public class Debuger {
     
-    static final String LOG_TAG = "GSYVideoPlayer";
+    static final String LOG_TAG = "WasuVideoPlayer";
     
     static boolean DEBUG_TAG = false;
 

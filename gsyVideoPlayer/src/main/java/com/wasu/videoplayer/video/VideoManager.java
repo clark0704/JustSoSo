@@ -445,6 +445,7 @@ public class VideoManager implements IMediaPlayer.OnPreparedListener, IMediaPlay
 
     @Override
     public void onCompletion(IMediaPlayer mp) {
+        Debuger.printfLog(TAG,"onCompletion");
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -474,6 +475,7 @@ public class VideoManager implements IMediaPlayer.OnPreparedListener, IMediaPlay
 
     @Override
     public void onSeekComplete(IMediaPlayer mp) {
+        Debuger.printfLog("onSeekComplete");
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {

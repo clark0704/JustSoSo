@@ -10,6 +10,12 @@
         android:layout_height="match_parent"
         android:gravity="center"/>
 
+    <ImageView
+        android:id="@+id/thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/player_logo"
+        android:scaleType="fitXY" />
     <!-- 视频顶部的布局 -->
     <LinearLayout
         android:id="@id/layout_top"

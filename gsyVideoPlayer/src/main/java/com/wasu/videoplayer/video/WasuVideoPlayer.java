@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +25,7 @@ import android.widget.Toast;
 import com.wasu.videoplayer.R;
 import com.wasu.videoplayer.listener.LockClickListener;
 import com.wasu.videoplayer.listener.StandardVideoAllCallBack;
+import com.wasu.videoplayer.utils.Debuger;
 import com.wasu.videoplayer.utils.NetworkUtils;
 
 import java.io.File;
@@ -60,6 +59,8 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     protected ImageButton mBtnPlayNext; //播放下一集
 
+    protected ImageView mThumb;//封面
+
     protected boolean mLockCurScreen;//锁定屏幕点击
     protected boolean mNeedLockFull;//是否需要锁定屏幕
 
@@ -68,6 +69,7 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     private StandardVideoAllCallBack mStandardVideoAllCallBack;
     protected LockClickListener mLockClickListener;//点击锁屏的回调
+
 
     //声音,亮度,进度控制
     protected Dialog mBrightnessDialog;//亮度布局
@@ -117,6 +119,8 @@ public class WasuVideoPlayer extends VideoPlayer {
 
         mBtnPlayNext = (ImageButton) findViewById(R.id.btnPlayNext);
 
+        mThumb = (ImageView) findViewById(R.id.thumb);
+
         mLockScreen = (ImageView) findViewById(R.id.lock_screen);
         mLockScreen.setVisibility(GONE);
         mLockScreen.setOnClickListener(new OnClickListener() {
@@ -155,6 +159,19 @@ public class WasuVideoPlayer extends VideoPlayer {
     @Override
     public void onClick(View v) {
         super.onClick(v);
+        int i = v.getId();
+       if (i == R.id.surface_container) {
+            if (mStandardVideoAllCallBack != null && isCurrentMediaListener()) {
+                if (mIfCurrentIsFullscreen) {
+                    Debuger.printfLog("onClickBlankFullscreen");
+                    mStandardVideoAllCallBack.onClickBlankFullscreen(mUrl, mObjects);
+                } else {
+                    Debuger.printfLog("onClickBlank");
+                    mStandardVideoAllCallBack.onClickBlank(mUrl, mObjects);
+                }
+            }
+            startDismissControlViewTimer();
+        }
     }
 
     @Override
@@ -181,6 +198,7 @@ public class WasuVideoPlayer extends VideoPlayer {
                 changeUiToErrorShow();
                 break;
             case CURRENT_STATE_AUTO_COMPLETE:
+                Log.e("Complete:","true");
                 changeUiToCompleteShow();
                 cancelDismissControlViewTimer();
                 break;
@@ -196,13 +214,16 @@ public class WasuVideoPlayer extends VideoPlayer {
     private void changeUiToPlayingBufferingShow() {
         changeUiToNormal();
         mLockScreen.setVisibility(GONE);
+        mThumb.setVisibility(GONE);
     }
 
     /**
      * 完成状态下显示的UI
      */
     private void changeUiToCompleteShow() {
+        Log.e("changeUiToCompleteShow:","true");
         changeUiToNormal();
+        mThumb.setVisibility(VISIBLE);
     }
 
     /**
@@ -210,6 +231,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToErrorShow() {
         changeUiToNormal();
+
     }
 
     /**
@@ -217,6 +239,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToPauseShow() {
         changeUiToNormal();
+        mThumb.setVisibility(INVISIBLE);
     }
 
     /**
@@ -224,6 +247,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToPlayingShow() {
         changeUiToNormal();
+        mThumb.setVisibility(INVISIBLE);
     }
 
     /**
@@ -231,6 +255,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToPreparingShow() {
         changeUiToNormal();
+        mThumb.setVisibility(INVISIBLE);
     }
 
     /**
@@ -240,6 +265,8 @@ public class WasuVideoPlayer extends VideoPlayer {
         mTopContainer.setVisibility(VISIBLE);
         mBottomContainer.setVisibility(VISIBLE);
         mRightContainer.setVisibility(VISIBLE);
+
+        mThumb.setVisibility(View.VISIBLE);
         showUIIsFullscreen();
         updateStartImage();
     }
@@ -346,6 +373,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToCompleteClear() {
         changeUiToPreparingClear();
+        mThumb.setVisibility(VISIBLE);
     }
 
     /**
@@ -369,6 +397,7 @@ public class WasuVideoPlayer extends VideoPlayer {
         mTopContainer.setVisibility(INVISIBLE);
         mBottomContainer.setVisibility(INVISIBLE);
         mRightContainer.setVisibility(INVISIBLE);
+        mThumb.setVisibility(View.INVISIBLE);
         mLockScreen.setVisibility(GONE);
     }
 
@@ -607,6 +636,19 @@ public class WasuVideoPlayer extends VideoPlayer {
     }
 
     /**
+     *
+     * @param deltaX
+     * @param seekTime
+     * @param seekTimePosition
+     * @param totalTime
+     * @param totalTimeDuration
+     */
+    @Override
+    protected void showProgressDialog(float deltaX, String seekTime, int seekTimePosition, String totalTime, int totalTimeDuration) {
+        super.showProgressDialog(deltaX, seekTime, seekTimePosition, totalTime, totalTimeDuration);
+    }
+
+    /**
      * 显示亮度
      *
      * @param percent 亮度百分比
@@ -617,6 +659,13 @@ public class WasuVideoPlayer extends VideoPlayer {
             View localView = initBrightAndVolumeView(percent);
             tvInfo.setText("亮度");
             imgvOoverlay.setImageResource(R.drawable.player_overlay_brightness);
+
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mVerticalBarProgress.getLayoutParams();
+            float brightness = Math.min(Math.max(percent, 0.01f), 1f);
+            brightness = Math.round(brightness * 100);
+            layoutParams.weight = brightness;
+            mVerticalBarProgress.setLayoutParams(layoutParams);
+            mVerticalBar.setVisibility(View.VISIBLE);
 
             mBrightnessDialog = new Dialog(getContext(), R.style.video_style_dialog_progress);
             mBrightnessDialog.setContentView(localView);
@@ -650,6 +699,11 @@ public class WasuVideoPlayer extends VideoPlayer {
                 imgvOoverlay.setImageResource(R.drawable.player_overlay_sound);
             }
 
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mVerticalBarProgress.getLayoutParams();
+            layoutParams.weight = volumePercent;
+            mVerticalBarProgress.setLayoutParams(layoutParams);
+            mVerticalBar.setVisibility(View.VISIBLE);
+
             mVolumeDialog = new Dialog(getContext(), R.style.video_style_dialog_progress);
             mVolumeDialog.setContentView(localView);
             mVolumeDialog.getWindow().addFlags(8);
@@ -666,8 +720,18 @@ public class WasuVideoPlayer extends VideoPlayer {
             localLayoutParams.y = location[1];
             mVolumeDialog.getWindow().setAttributes(localLayoutParams);
         }
-        if (mVolumeDialog.isShowing()){
+        if (!mVolumeDialog.isShowing()){
             mVolumeDialog.show();
+        }
+    }
+
+
+    @Override
+    protected void dismissVolumeDialog() {
+        super.dismissVolumeDialog();
+        if (mVolumeDialog != null){
+            mVolumeDialog.dismiss();
+            mVolumeDialog =null;
         }
     }
 
@@ -688,13 +752,6 @@ public class WasuVideoPlayer extends VideoPlayer {
         tvInfo = (TextView) localView.findViewById(R.id.player_overlay_textinfo);
         imgvOoverlay = (ImageView) localView.findViewById(R.id.player_overlay_image);
         mVerticalBarProgress = localView.findViewById(R.id.verticalbar_progress);
-
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mVerticalBarProgress.getLayoutParams();
-        float brightness = Math.min(Math.max(percent, 0.01f), 1f);
-        brightness = Math.round(brightness * 100);
-        layoutParams.weight = brightness;
-        mVerticalBarProgress.setLayoutParams(layoutParams);
-        mVerticalBar.setVisibility(View.VISIBLE);
 
         return localView;
     }
