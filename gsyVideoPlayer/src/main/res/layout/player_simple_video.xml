@@ -189,4 +189,7 @@
             android:textColor="@android:color/white"
             android:text="收藏" />
     </LinearLayout>
+    <!-- 中间布局 -->
+    <include android:id="@+id/center_container"
+        layout="@layout/wasu_video_progress_dialog"/>
 </RelativeLayout>

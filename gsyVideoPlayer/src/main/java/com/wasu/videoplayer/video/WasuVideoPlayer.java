@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Point;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     protected ViewGroup mRightContainer;//右边的父布局（横屏）
     protected Button mBtnEpisodeLand, mBtnDownloadLand, mBtnCollectLand;
+    protected View mLineTop;
 
     protected LinearLayout mTopRight; //竖屛右上角布局
     protected ImageButton mBtnDownload, mBtnCollect, mBtnShare;//竖屛右上角的子控件
@@ -61,6 +65,10 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     protected ImageView mThumb;//封面
 
+    protected View mCenterContainer;//中间缓冲的布局
+    protected ProgressBar mProgressBarLoading;//缓冲进度圈
+    protected TextView mPlayMsg;//缓冲时候的信息
+
     protected boolean mLockCurScreen;//锁定屏幕点击
     protected boolean mNeedLockFull;//是否需要锁定屏幕
 
@@ -70,6 +78,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     private StandardVideoAllCallBack mStandardVideoAllCallBack;
     protected LockClickListener mLockClickListener;//点击锁屏的回调
 
+    public static final int CURRENT_STATE_BUFFER_PERCENT= 8; //缓冲百分比
 
     //声音,亮度,进度控制
     protected Dialog mBrightnessDialog;//亮度布局
@@ -103,10 +112,17 @@ public class WasuVideoPlayer extends VideoPlayer {
 
         mTitle = (TextView) findViewById(R.id.title);
 
+        mCenterContainer = findViewById(R.id.center_container);
+        mProgressBarLoading = (ProgressBar) findViewById(R.id.pbLoading);
+        mPlayMsg = (TextView) findViewById(R.id.tvPlayMsg);
+
         mRightContainer = (ViewGroup) findViewById(R.id.layout_right);
         mBtnDownloadLand = (Button) findViewById(R.id.btn_download_land);
         mBtnCollectLand = (Button) findViewById(R.id.btn_collect_land);
         mBtnEpisodeLand = (Button) findViewById(R.id.btn_episodes);
+        mBtnEpisodeLand.setVisibility(GONE);
+        mLineTop = findViewById(R.id.viewTop);
+        mLineTop.setVisibility(GONE);
 
         mTopRight = (LinearLayout) findViewById(R.id.ll_top_right);
         mBtnCollect = (ImageButton) findViewById(R.id.btn_collect);
@@ -156,19 +172,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        int i = v.getId();
-       if (i == R.id.surface_container) {
-            if (mStandardVideoAllCallBack != null && isCurrentMediaListener()) {
-                if (mIfCurrentIsFullscreen) {
-                    Debuger.printfLog("onClickBlankFullscreen");
-                    mStandardVideoAllCallBack.onClickBlankFullscreen(mUrl, mObjects);
-                } else {
-                    Debuger.printfLog("onClickBlank");
-                    mStandardVideoAllCallBack.onClickBlank(mUrl, mObjects);
-                }
-            }
-            startDismissControlViewTimer();
-        }
+
     }
 
     @Override
@@ -205,13 +209,29 @@ public class WasuVideoPlayer extends VideoPlayer {
         }
     }
 
+
+    //        percent = Math.min(Math.max(percent,0),100);
+//        String strText = String.format(getContext().getString(R.string.player_format_buffer_msg),
+//                percent)
+//                .toString();
+//        mPlayMsg.setText(strText);
+//        if (percent >= 95) {
+//            mCenterContainer.setVisibility(View.GONE);
+//        } else {
+//            mCenterContainer.setVisibility(View.VISIBLE);
+//        }
+
     /**
-     * 在缓冲状态下显示的UI
+     * 在开始缓冲状态下显示的UI
      */
     private void changeUiToPlayingBufferingShow() {
         changeUiToNormal();
         mLockScreen.setVisibility(GONE);
         mThumb.setVisibility(GONE);
+        mCenterContainer.setVisibility(VISIBLE);
+        mProgressBarLoading.setVisibility(VISIBLE);
+        mPlayMsg.setText(R.string.player_loading_msg);
+
     }
 
     /**
@@ -228,7 +248,7 @@ public class WasuVideoPlayer extends VideoPlayer {
      */
     private void changeUiToErrorShow() {
         changeUiToNormal();
-
+        mThumb.setVisibility(INVISIBLE);
     }
 
     /**
@@ -245,6 +265,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     private void changeUiToPlayingShow() {
         changeUiToNormal();
         mThumb.setVisibility(INVISIBLE);
+        mCenterContainer.setVisibility(INVISIBLE);
     }
 
     /**
@@ -253,6 +274,9 @@ public class WasuVideoPlayer extends VideoPlayer {
     private void changeUiToPreparingShow() {
         changeUiToNormal();
         mThumb.setVisibility(INVISIBLE);
+        mCenterContainer.setVisibility(VISIBLE);
+        mProgressBarLoading.setVisibility(VISIBLE);
+        mPlayMsg.setText(R.string.player_url_link_msg);
     }
 
     /**
@@ -262,7 +286,7 @@ public class WasuVideoPlayer extends VideoPlayer {
         mTopContainer.setVisibility(VISIBLE);
         mBottomContainer.setVisibility(VISIBLE);
         mRightContainer.setVisibility(VISIBLE);
-
+        mCenterContainer.setVisibility(INVISIBLE);
         mThumb.setVisibility(View.VISIBLE);
         showUIIsFullscreen();
         updateStartImage();
@@ -540,6 +564,7 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     @Override
     public void onAutoCompletion() {
+        super.onAutoCompletion();
         if (mLockCurScreen) {
             lockTouchLogic();
             mLockScreen.setVisibility(GONE);
@@ -585,7 +610,15 @@ public class WasuVideoPlayer extends VideoPlayer {
         }
         return baseVideoPlayer;
     }
-
+    @Override
+    public BaseVideoPlayer showSmallVideo(Point size, boolean actionBar, boolean statusBar) {
+        BaseVideoPlayer baseVideoPlayer = super.showSmallVideo(size, actionBar, statusBar);
+        if (baseVideoPlayer != null) {
+            WasuVideoPlayer gsyVideoPlayer = (WasuVideoPlayer) baseVideoPlayer;
+            gsyVideoPlayer.setStandardVideoAllCallBack(mStandardVideoAllCallBack);
+        }
+        return baseVideoPlayer;
+    }
     /**
      * 设置锁屏
      *
@@ -601,6 +634,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     public TextView getTitleTextView() {
         return mTitle;
     }
+
 
     @Override
     protected void showWifiDialog() {
@@ -643,6 +677,7 @@ public class WasuVideoPlayer extends VideoPlayer {
     @Override
     protected void showProgressDialog(float deltaX, String seekTime, int seekTimePosition, String totalTime, int totalTimeDuration) {
         super.showProgressDialog(deltaX, seekTime, seekTimePosition, totalTime, totalTimeDuration);
+
     }
 
     /**

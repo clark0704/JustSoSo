@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.huwenmin.playerexample.listener.SampleListener;
 import com.wasu.videoplayer.utils.Debuger;
+import com.wasu.videoplayer.video.StandardVideoPlayer;
 import com.wasu.videoplayer.video.VideoManager;
 import com.wasu.videoplayer.listener.LockClickListener;
 import com.wasu.videoplayer.utils.OrientationUtils;
@@ -43,6 +44,8 @@ public class ExampleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Debuger.printfError("onCreate");
         setContentView(R.layout.activity_example);
         ButterKnife.bind(this);
 
@@ -70,6 +73,9 @@ public class ExampleActivity extends AppCompatActivity {
         detailPlayer.setNeedLockFull(true);
         //初始化状态
         detailPlayer.initUIState();
+
+        //没有剧集信息
+//        detailPlayer.isShowEpisode(false);
 
         if (isLandscape) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -156,18 +162,28 @@ public class ExampleActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Debuger.printfError("onPause");
         detailPlayer.onVideoPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        detailPlayer.onVideoResume();
+        Debuger.printfError("onResume");
+
+//        detailPlayer.onVideoResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Debuger.printfError("onStart");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Debuger.printfError("onDestroy");
         detailPlayer.releaseAllVideos();
         if (orientationUtils != null)
             orientationUtils.releaseListener();

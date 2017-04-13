@@ -2,14 +2,13 @@ apply plugin: 'com.android.library'
 
 android {
 
-    def globalConfiguration = rootProject.extensions.getByName("ext")
-    compileSdkVersion globalConfiguration.androidCompileSdkVersion
-    buildToolsVersion globalConfiguration.androidBuildToolsVersion
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
 
-        minSdkVersion globalConfiguration.androidMinSdkVersion
-        targetSdkVersion globalConfiguration.androidTargetSdkVersion
+        minSdkVersion 15
+        targetSdkVersion 22
 
         versionCode 1
         versionName "1.0"
@@ -38,12 +37,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    def viewDependencies = rootProject.ext.viewDependencies
-    def dataDependencies = rootProject.ext.dataDependencies
-    compile viewDependencies.transitionseverywhere
-    compile dataDependencies.videocache
-    compile androidDependencies.support_v4
-    compile androidDependencies.appcompat_v7
+    compile "com.andkulikov:transitionseverywhere:1.7.0"
+    compile "com.danikula:videocache:2.6.4"
+    compile "com.android.support:appcompat-v7:25.0.0"
 }
 
-//apply from: '../bintray.gradle'

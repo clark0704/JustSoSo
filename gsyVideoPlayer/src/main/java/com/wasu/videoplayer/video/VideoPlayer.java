@@ -625,7 +625,7 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
                     dismissVolumeDialog();
                     dismissBrightnessDialog();
                     if (mChangePosition) {
-                        VideoManager.instance(getContext()).getMediaPlayer().seekTo(mSeekTimePosition);
+                      if (VideoManager.instance(getContext()).getMediaPlayer()!=null) VideoManager.instance(getContext()).getMediaPlayer().seekTo(mSeekTimePosition);
                         int duration = getDuration();
                         int progress = mSeekTimePosition * 100 / (duration == 0 ? 1 : duration);
                         mProgressBar.setProgress(progress);
@@ -819,7 +819,6 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
 
     @Override
     public void onAutoCompletion() {
-        Debuger.printfLog(TAG,"onAutoComplete");
         if (mVideoAllCallBack != null && isCurrentMediaListener()) {
             Debuger.printfLog("onAutoComplete");
             mVideoAllCallBack.onAutoComplete(mUrl, mObjects);
