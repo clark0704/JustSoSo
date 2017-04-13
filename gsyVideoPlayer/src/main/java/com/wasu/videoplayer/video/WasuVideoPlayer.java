@@ -145,10 +145,7 @@ public class WasuVideoPlayer extends VideoPlayer {
             if (mHideKey) hideNavKey(getContext());
             mOrientationUtils.setEnable(false);
         }
-
     }
-
-
     /**
      * 初始化为正常状态
      */
