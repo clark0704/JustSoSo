@@ -1,4 +1,4 @@
-package com.wasu.videoplayer.video;
+package com.huwenmin.playerexample.video;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,8 +27,9 @@ import android.widget.Toast;
 import com.wasu.videoplayer.R;
 import com.wasu.videoplayer.listener.LockClickListener;
 import com.wasu.videoplayer.listener.StandardVideoAllCallBack;
-import com.wasu.videoplayer.utils.Debuger;
 import com.wasu.videoplayer.utils.NetworkUtils;
+import com.wasu.videoplayer.video.BaseVideoPlayer;
+import com.wasu.videoplayer.video.VideoPlayer;
 
 import java.io.File;
 import java.util.Map;
@@ -77,8 +77,6 @@ public class WasuVideoPlayer extends VideoPlayer {
 
     private StandardVideoAllCallBack mStandardVideoAllCallBack;
     protected LockClickListener mLockClickListener;//点击锁屏的回调
-
-    public static final int CURRENT_STATE_BUFFER_PERCENT= 8; //缓冲百分比
 
     //声音,亮度,进度控制
     protected Dialog mBrightnessDialog;//亮度布局

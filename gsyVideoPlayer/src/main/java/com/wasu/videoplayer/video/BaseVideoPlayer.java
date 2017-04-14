@@ -136,7 +136,7 @@ public abstract class BaseVideoPlayer extends FrameLayout implements MediaPlayer
 
     private Handler mHandler = new Handler();
 
-    protected  boolean isLandscape;
+    protected  boolean isLandscape; //是否进入默认横屏
     /**
      * 1.5.0开始加入，如果需要不同布局区分功能，需要重载
      */

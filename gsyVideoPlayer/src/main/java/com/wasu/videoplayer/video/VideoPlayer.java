@@ -170,9 +170,10 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
             return;
         mStartButton.setOnClickListener(this);
         mFullscreenButton.setOnClickListener(this);
-        mProgressBar.setOnSeekBarChangeListener(this);
         mBottomContainer.setOnClickListener(this);
         mTextureViewContainer.setOnClickListener(this);
+
+        mProgressBar.setOnSeekBarChangeListener(this);
         mProgressBar.setOnTouchListener(this);
 
         mTextureViewContainer.setOnTouchListener(this);
@@ -1261,5 +1262,7 @@ public abstract class VideoPlayer extends BaseVideoPlayer implements View.OnClic
     public int getBuffterPoint() {
         return mBuffterPoint;
     }
+
+
 
 }
