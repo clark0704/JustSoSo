@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.wasu.videoplayer.R;
 import com.wasu.videoplayer.listener.LockClickListener;
 import com.wasu.videoplayer.listener.StandardVideoAllCallBack;
+import com.wasu.videoplayer.utils.Debuger;
 import com.wasu.videoplayer.utils.NetworkUtils;
 import com.wasu.videoplayer.video.BaseVideoPlayer;
 import com.wasu.videoplayer.video.VideoPlayer;
@@ -513,7 +514,7 @@ public class WasuVideoPlayer extends VideoPlayer {
         if (mLockCurScreen) {
             mLockScreen.setBackgroundResource(R.drawable.player_unlock_selector);
             mLockCurScreen = false;
-            Log.e("isLandscape:", isLandscape + "");
+            Debuger.printfError(isLandscape+"");
             if (mOrientationUtils != null) mOrientationUtils.setEnable(mRotateViewAuto);
         } else {
             mLockScreen.setBackgroundResource(R.drawable.player_lock_selector);

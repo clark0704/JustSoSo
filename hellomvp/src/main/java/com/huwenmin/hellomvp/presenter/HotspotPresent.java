@@ -49,8 +49,7 @@ public class HotspotPresent implements BasePresenter {
             public void getDisposable(Disposable disposable) {
                 mDisposable = disposable;
             }
-        })
-                .getObservable();
+        }).getObservable();
     }
 
 }

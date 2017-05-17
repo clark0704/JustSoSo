@@ -45,14 +45,14 @@ public class ExampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (isLandscape) setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         else setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Debuger.printfError("onCreate");
+//        Debuger.printfError("onCreate");
         setContentView(R.layout.activity_example);
         ButterKnife.bind(this);
 
 
         Debuger.enable();
         detailPlayer.setLandscape(isLandscape);
-//        url = "http://apkvod-cnc.wasu.cn/201704140905/d822173b3b8e3824f2430ffb403828f4/pcsan12/mams/vod/201704/06/19/20170406190931180eb3ec869/playlist.m3u8?k=8985c76c32c4b4cca315bd364d107b1d&su=pwqZhZYrZ7Ht3a5GBh6Wvw==&uid=8116fc6d4ea554d40abd23c3b9334924&tn=41580393&t=f44bda5499fe98b4925a8c8308c23e7e&src=wasu.cn&cid=22&vid=8688069&WS00001=10000&em=3";
+        url = "http://apkvod-cnc.wasu.cn/591002be/6a2b9345001032a31d733d4b17113db6/pcsan02/ipad/268/20111201/201112011155213125_785322_b7d6d662/playlist.m3u8?k=26414a16030fadfacdcfa7ec4a5c577b&su=FsOSoD1WiIQ9SogO/xnAQg==&uid=ff29b433d5c250017837a499c13ac00b&tn=82352682&t=2449e411800a83ac789a31ccc8919b70&src=wasu.cn&cid=1&vid=null&WS00001=10000&em=3";
 
         detailPlayer.setUp(url, false, null, "测试视频");
         if (isLandscape) detailPlayer.startWindowFullscreen(this,true,true);
@@ -137,9 +137,10 @@ public class ExampleActivity extends AppCompatActivity {
         detailPlayer.setLockClickListener(new LockClickListener() {
             @Override
             public void onClick(View view, boolean lock) {
-                if (orientationUtils != null) {
+                if (orientationUtils != null ) {
                     //配合下方的onConfigurationChanged
-                     orientationUtils.setEnable(!lock);
+                   if (!isLandscape) orientationUtils.setEnable(!lock);
+                    else orientationUtils.setEnable(false);
                 }
             }
         });
