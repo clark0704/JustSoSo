@@ -9,7 +9,7 @@ import com.huwenmin.brvahdemo.module.UPMRegisterDeviceReqBean;
  * 作者：Administrator on 2017/5/22 10:25
  * <p>
  * 功能：UPM请求数据获取的工具类
- *   1101001,1101002,1101014,1102031 免密码
+ *   1101001,1101002,1101014,1102031 免密
  */
 
 public class UPMDataUtils {
@@ -21,7 +21,7 @@ public class UPMDataUtils {
     public static final String LOGIN_PHONE_CODE_MSG = "1102026";
     public static final String LOGIN_OUT_MSG = "1102008";
 
-    public static final String TV_ID = "AP0000PHO100231034565781";
+    public static final String TV_ID = "AP0000PHO100231034565780";
 
 
 

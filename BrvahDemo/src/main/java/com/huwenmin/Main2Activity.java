@@ -22,7 +22,7 @@ import java.security.interfaces.RSAPublicKey;
 
 import Decoder.BASE64Encoder;
 
-public class Main2Activity extends AppCompatActivity implements BaseRequestListener{
+public class Main2Activity extends AppCompatActivity implements BaseRequestListener {
 
     private UPMUserApiService mUPMUserApiService;
     private ACache mACache;
@@ -54,56 +54,47 @@ public class Main2Activity extends AppCompatActivity implements BaseRequestListe
         /**
          * UPM登录设备
          */
-        if (bean!=null && !StringUtils.isEmpty(bean.getDeviceId())) {
+        if (bean != null && !StringUtils.isEmpty(bean.getDeviceId())) {
 
             UPMLoginDeviceReqBean loginDeviceReqBean = UPMDataUtils.getLoginReqBean(bean.getDeviceId());
-            mACache.put("deviceId",bean.getDeviceId());
+            mACache.put("deviceId", bean.getDeviceId());
 
             Gson gson = new Gson();
             String s = gson.toJson(loginDeviceReqBean);
 
             String publicKey = null;
-            if (StringUtils.isEmpty(bean.getPublicKey())){
+            if (StringUtils.isEmpty(bean.getPublicKey())) {
                 publicKey = mACache.getAsString("publicKey");
-            }else {
+            } else {
                 publicKey = bean.getPublicKey();
-                mACache.put("publicKey",publicKey);
+                mACache.put("publicKey", publicKey);
             }
-//            byte[] bytes = null;
-            try {
-//                RSAPublicKey key  = UPMUtil.loadPublicKey(publicKey);
-//                bytes = UPMUtil.encrypt(s.getBytes(),key);
+            Log.e(getClass().getSimpleName(), publicKey);
 
-                mUPMUserApiService.loginDeviceToUPM(s);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            mUPMUserApiService.loginDeviceToUPM(s);
         }
     }
 
     @Override
     public void getLoginBean(UPMLoginDeviceRespBean bean) {
-       if (bean != null && !StringUtils.isEmpty(bean.getPublicKey()))mACache.put("publicKey",bean.getPublicKey());
+        if (bean != null && !StringUtils.isEmpty(bean.getPublicKey()))
+            mACache.put("publicKey", bean.getPublicKey());
 
         Gson gson = new Gson();
 
-        String s = gson.toJson(UPMDataUtils.getPhoneCode(mACache.getAsString("deviceId"),"15858241815",0));
+        String s = gson.toJson(UPMDataUtils.getPhoneCode(mACache.getAsString("deviceId"), "15858241815", 0));
+        Log.e("Main2Actiity",s);
 
         String publicKey = mACache.getAsString("publicKey");
 
-                    byte[] bytes = null;
+        byte[] bytes = null;
         try {
-                RSAPublicKey key  = UPMUtil.loadPublicKey(publicKey);
-                bytes = UPMUtil.encrypt(s.getBytes(),key);
+            bytes = UPMUtil.encrypt(s.getBytes(), publicKey.getBytes());
 
-
-
-            mUPMUserApiService.getPhoneCode(new BASE64Encoder().encode(bytes));
+            mUPMUserApiService.getPhoneCode(bytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
 
     }
