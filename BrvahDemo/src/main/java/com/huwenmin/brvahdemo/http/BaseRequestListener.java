@@ -5,6 +5,8 @@ import com.huwenmin.brvahdemo.module.UPMLoginDeviceRespBean;
 import com.huwenmin.brvahdemo.module.UPMPhoneCodeRespBean;
 import com.huwenmin.brvahdemo.module.UPMRegisterDeviceRespBean;
 
+import okhttp3.ResponseBody;
+
 /**
  * 作者：Administrator on 2017/5/22 09:55
  * <p>
@@ -17,5 +19,5 @@ public interface BaseRequestListener{
 
     void getLoginBean(UPMLoginDeviceRespBean bean);
 
-    void getPhoneCode(UPMPhoneCodeRespBean bean);
+    void getPhoneCode(ResponseBody bean);
 }

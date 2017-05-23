@@ -1,5 +1,7 @@
 package com.huwenmin.brvahdemo.http;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.huwenmin.brvahdemo.module.UPMLoginDeviceRespBean;
 import com.huwenmin.brvahdemo.module.UPMPhoneCodeRespBean;
@@ -14,6 +16,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 /**
  * 作者：Administrator on 2017/5/22 09:39
@@ -48,13 +51,13 @@ public class UPMUserApiService {
      *
      * @param bean
      */
-    public void registerDeviceToUPM(UPMRegisterDeviceReqBean bean) {
+    public void registerDeviceToUPM(UPMRegisterDeviceReqBean bean ,String v ) {
         Gson gson = new Gson();
         String s = gson.toJson(bean);
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
 
-        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.REGISTER_DEVICE_MSG).getApi().getUserRegisterMes(body)
+        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.REGISTER_DEVICE_MSG,v).getApi().getUserRegisterMes(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UPMRegisterDeviceRespBean>() {
@@ -83,9 +86,9 @@ public class UPMUserApiService {
     /**
      * UPM设备登录接口
      */
-    public void loginDeviceToUPM(String bytes) {
+    public void loginDeviceToUPM(String bytes , String v) {
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), bytes);
-        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.LOGIN_DEVICE_MSG).getApi().getUserLoginMes(body)
+        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.LOGIN_DEVICE_MSG,v).getApi().getUserLoginMes(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<UPMLoginDeviceRespBean>() {
@@ -112,20 +115,22 @@ public class UPMUserApiService {
                 });
     }
 
-    public void getPhoneCode(String s) {
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), s);
+    public void getPhoneCode(byte[] bytes,String v) {
 
-        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.GET_PHONE_CODE_MSG).getApi().getPhoneCode(body)
+
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), bytes);
+
+        UPMUserHttpUtils.getInstance().setMsg(UPMDataUtils.GET_PHONE_CODE_MSG,v).getApi().getBody(body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<UPMPhoneCodeRespBean>() {
+                .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         mDisposable = d;
                     }
 
                     @Override
-                    public void onNext(UPMPhoneCodeRespBean value) {
+                    public void onNext(ResponseBody value) {
                         mListener.getPhoneCode(value);
                     }
 

@@ -21,7 +21,7 @@ public class UPMRegisterDeviceRespBean {
 
     private int code;
     private String deviceId;
-    private int encryptV;
+    private int encryptV = -1;
     private String identification;
     private boolean jsonP;
     private PropertiesBean properties;

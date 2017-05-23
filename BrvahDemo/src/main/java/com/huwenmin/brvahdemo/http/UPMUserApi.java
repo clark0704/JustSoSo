@@ -7,6 +7,7 @@ import com.huwenmin.brvahdemo.module.UPMRegisterDeviceRespBean;
 
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -33,10 +34,10 @@ public interface UPMUserApi {
     Observable<UPMLoginDeviceRespBean> getUserLoginMes(@Body RequestBody bean);
     /**
      *
-     * 获取手机验证码
+     * 获取手机验证码、用戶登出、根據驗證碼登錄、用户强转接口-- 昵称、邮箱转手机账号
+     * 用户强转接口-- QQ、微博转手机账号
      * @param bean
      */
-    @Headers({"v:1"})
     @POST("pcum")
-    Observable<UPMPhoneCodeRespBean> getPhoneCode(@Body RequestBody bean);
+    Observable<ResponseBody> getBody(@Body RequestBody bean);
 }

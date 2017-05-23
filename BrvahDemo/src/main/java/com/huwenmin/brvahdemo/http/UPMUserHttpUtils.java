@@ -47,6 +47,8 @@ public class UPMUserHttpUtils<T extends Object> {
 
     private  String msgCode;
 
+    private String v;
+
     public static synchronized UPMUserHttpUtils getInstance(){
         if (instance == null){
            instance = new UPMUserHttpUtils();
@@ -54,9 +56,9 @@ public class UPMUserHttpUtils<T extends Object> {
         return instance;
     }
 
-    public UPMUserHttpUtils setMsg(String msg){
+    public UPMUserHttpUtils setMsg(String msg,String v){
         msgCode = msg;
-
+        this.v = v;
         return instance;
     }
     /**
@@ -103,7 +105,7 @@ public class UPMUserHttpUtils<T extends Object> {
                     Request request = chain.request().newBuilder()
                             .addHeader("Content-Type","application/json; charset=UTF-8")
                             .addHeader("msg",msgCode)
-                            .addHeader("v","0")
+                            .addHeader("v",v)
                             .build();
 
                     return chain.proceed(request);
