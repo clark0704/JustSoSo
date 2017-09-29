@@ -18,7 +18,7 @@ import retrofit2.http.Path;
 
 public interface RetrofitApi {
 
-    @GET("Phone/todayhot/p/{p}/time/{time}/limit/{limit}")
+    @GET("Phone/todayhot/op/{p}/time/{time}/limit/{limit}")
     Observable<AssertPageBean> getTodayHot(@Path("p") int p,@Path("time") long time,@Path("limit") int limit);
     @GET("AggPhone/getRecommond")
     Observable<List<ColumnDataItem>> getAggPhoneRecommond();
