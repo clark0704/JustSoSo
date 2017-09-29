@@ -29,6 +29,7 @@ public class HotspotPresent implements BasePresenter {
     public void onStop() {
        if (mDisposable.isDisposed())mDisposable.dispose();
     }
+
     public void requestHotspotData(int p, long time, int limit ){
         RetrofitService.getInstance().getHotspotData(p, time, limit, new RequestCallback<AssertPageBean>() {
             @Override
